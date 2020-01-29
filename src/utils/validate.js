@@ -22,7 +22,7 @@ export function validateMail(value) {
  * 验证密码 密码为6至20位数字+字母   
  */
 export function validatePass(value) {
-    let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\s\S]{6,20}$/;
+    let reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,20}$/;
     // let reg = /^([a-zA-Z]|[0-9])(\W|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,,4})$/ //邮箱
     return !reg.test(value) ? true : false
 }
@@ -31,6 +31,6 @@ export function validatePass(value) {
  * 验证验证码 只有6位数字
  */
 export function validateCode(value) {
-    let reg = /^\d{0,9}(6)$ /;
+    let reg = /^\d{6}$/;
     return !reg.test(value) ? true : false
 }

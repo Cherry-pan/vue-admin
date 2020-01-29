@@ -1,5 +1,6 @@
 <template>
   <div id="login">
+    
     <div class="login_wrap">
       <ul class="menu_tab">
         <li
@@ -80,7 +81,6 @@
 </template>
 
 <script>
-import { reactive, ref, isRef, onMounted } from "@vue/composition-api";
 import {
   stripscript,
   validateMail,
@@ -88,11 +88,7 @@ import {
   validateCode
 } from "@/utils/validate.js";
 export default {
-  name: "login",
-  setup(props, context) {
-    /**
-     * 具体验证表单信息
-     */
+  data() {
     // 验证用户名
     var validateUsername = (rule, value, callback) => {
       if (value === "") {
@@ -107,8 +103,8 @@ export default {
     // 验证密码
     var validatePassword = (rule, value, callback) => {
       //过滤后的数据
-      ruleForm.password = stripscript(value);
-      value = ruleForm.password;
+      this.ruleForm.password = stripscript(value);
+      value = this.ruleForm.password;
       if (value === "") {
         callback(new Error("请输入密码"));
       } else if (validatePass(value)) {
@@ -121,15 +117,15 @@ export default {
     // 验证重复密码
     var validateRePassword = (rule, value, callback) => {
       // 如果模块值为login，就直接通过
-      if (model.value === "login") {
+      if (this.model === "login") {
         callback();
       }
       //过滤后的数据
-      ruleForm.repassword = stripscript(value);
-      value = ruleForm.repassword;
+      this.ruleForm.repassword = stripscript(value);
+      value = this.ruleForm.repassword;
       if (value === "") {
         callback(new Error("请再次输入密码"));
-      } else if (value !== ruleForm.password) {
+      } else if (value !== this.ruleForm.password) {
         callback(new Error("两次密码输入不一样"));
       } else {
         callback();
@@ -147,82 +143,58 @@ export default {
       }
     };
 
-    /**
-     * 声明数据
-     */
-    // 这里放置data数据。生命周期，自定义的函数
-    // reactive 对象类型的
-    const menuTab = reactive([
-      {
-        txt: "登录",
-        current: true,
-        type: "login"
+    return {
+      menuTab: [
+        {
+          txt: "登录",
+          current: true,
+          type: "login"
+        },
+        {
+          txt: "注册",
+          current: false,
+          type: "register"
+        }
+      ],
+      // 模块
+      model: "login",
+      // 表单
+      ruleForm: {
+        username: "",
+        password: "",
+        repassword: "",
+        code: ""
       },
-      {
-        txt: "注册",
-        current: false,
-        type: "register"
+      rules: {
+        username: [{ validator: validateUsername, trigger: "blur" }],
+        password: [{ validator: validatePassword, trigger: "blur" }],
+        repassword: [{ validator: validateRePassword, trigger: "blur" }],
+        code: [{ validator: checkCode, trigger: "blur" }]
       }
-    ]);
-
-    // 表单  对象
-    const ruleForm = reactive({
-      username: "",
-      password: "",
-      repassword: "",
-      code: ""
-    });
-
-    // 模块值 model.value 才能拿到值
-    // ref声明基础的数据变量时使用
-    const model = ref("login");
-
-    /**
-     * 表单的验证
-     */
-    const rules = reactive({
-      username: [{ validator: validateUsername, trigger: "blur" }],
-      password: [{ validator: validatePassword, trigger: "blur" }],
-      repassword: [{ validator: validateRePassword, trigger: "blur" }],
-      code: [{ validator: checkCode, trigger: "blur" }]
-    });
-
-    /**
-     * 声明函数methods
-     */
+    };
+  },
+  // 挂载完成自动编译
+  mounted() {},
+  methods: {
     // vue数据驱动视图渲染
-    const toggleMenu = data => {
-      menuTab.forEach(r => {
+    toggleMenu(data) {
+      this.menuTab.forEach(r => {
         r.current = false;
       });
-      // 高光
       data.current = true;
-      // 修改模块值
-      model.value = data.type;
-    };
-
+      this.model = data.type;
+    },
     // 表单
-    const submitForm = formName => {
-      // this.$refs(2.0) = context.refs
-      context.refs[formName].validate(valid => {
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
         if (valid) {
           alert("submit!");
         } else {
-          // console.log("error submit!!");
+          console.log("error submit!!");
           return false;
         }
       });
-    };
-
-    /**
-     * 生命周期
-     * 2.0mounted已经改成onMounted
-     */
-    // 挂载完成执行
-    onMounted(() => {});
-
-    // 最后需要将定义的变量全都return
-    return { menuTab, model, toggleMenu, submitForm, ruleForm, rules };
+    }
   }
 };
 </script>
