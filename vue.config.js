@@ -1,3 +1,8 @@
+const path = require("path");
+
+// function resolve(dir) {
+//   return path.join(__dirname, dir);
+// }
 module.exports = {
   // 基本路径
   publicPath: "./",
@@ -9,7 +14,7 @@ module.exports = {
   // https://vuejs.org/v2/guide/installation.html#Runtime-Compiler-vs-Runtime-only
   // webpack配置
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     /**
      * 删除懒加载模块的 prefetch preload，降低带宽压力
      * https://cli.vuejs.org/zh/guide/html-and-static-assets.html#prefetch
@@ -21,7 +26,19 @@ module.exports = {
     config.resolve.symlinks(true);
     return config;
   },
-  configureWebpack: () => {},
+  configureWebpack: (config) => {
+    config.resolve = { //配置解析别名
+      extensions: ['.js', '.json', '.vue'], //自动添加文件名后缀
+      alias: {
+        "@": path.resolve(__dirname, './src'),
+        "public": path.resolve(__dirname, './public'),
+        "@c": path.resolve(__dirname, './src/components'),
+        "common": path.resolve(__dirname, './src/common'),
+        "api": path.resolve(__dirname, './src/api'),
+        "views": path.resolve(__dirname, './src/views')
+      }
+    }
+  },
   // vue-loader 配置项
   // https://vue-loader.vuejs.org/en/options.html
   // 生产环境是否生成 sourceMap 文件
@@ -35,7 +52,7 @@ module.exports = {
     // css预设器配置项
     loaderOptions: {
       sass: {
-        prependData: "@import './src/styles/main.scss';"
+        prependData: "@import '@/styles/main.scss';"
       }
     },
     // 启用 CSS modules for all css / pre-processor files.
