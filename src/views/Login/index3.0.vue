@@ -178,7 +178,7 @@ export default {
     const model = ref("login");
 
     /**
-     * 表单的验证
+     * 表单光标移除时的验证
      */
     const rules = reactive({
       username: [{ validator: validateUsername, trigger: "blur" }],
@@ -201,7 +201,7 @@ export default {
       model.value = data.type;
     };
 
-    // 表单
+    // 表单提交
     const submitForm = formName => {
       // this.$refs(2.0) = context.refs
       context.refs[formName].validate(valid => {

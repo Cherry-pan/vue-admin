@@ -31,6 +31,6 @@ export function validatePass(value) {
  * 验证验证码 只有6位数字
  */
 export function validateCode(value) {
-    let reg = /^\d{6}$/;
+    let reg = /^[a-zA-Z0-9]{6}$/;
     return !reg.test(value) ? true : false
 }

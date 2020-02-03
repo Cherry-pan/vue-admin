@@ -1,13 +1,10 @@
 const path = require("path");
 
-// function resolve(dir) {
-//   return path.join(__dirname, dir);
-// }
 module.exports = {
   // 基本路径
-  publicPath: "./",
+  publicPath: process.env.NODE_ENV === "production" ? "" : "./",
   // 输出文件目录
-  outputDir: "dist",
+  outputDir: process.env.NODE_ENV === "production" ? "dist" : "devdist",
   // eslint-loader 是否在保存的时候检查
   lintOnSave: false,
   // use the full build with in-browser compiler?
@@ -73,7 +70,16 @@ module.exports = {
     port: 8080,
     https: false,
     hotOnly: false,
-    proxy: null, // 设置代理
+    proxy: { // 设置代理
+      '/web': {        
+        target: 'http://www.web-jshtml.cn/productapi', //设置你调用的接口域名和端口号 别忘了加http
+        changeOrigin: true,
+        pathRewrite: {
+          '^/web': ''
+          //这里理解成用‘/web'代替target里面的地址，后面组件中我们掉接口时直接用web代替 比如我要调用'http://www.web-jshtml.cn/productApi/user/add'，直接写‘/web/user/add'即可
+        }
+      }
+    },
     before: app => {},
     open: true,
     hot: true
