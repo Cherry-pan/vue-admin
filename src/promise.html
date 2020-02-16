@@ -36,7 +36,6 @@
                 }
             })
         };
-
         function promise2(status) {
             return new Promise((resolve, reject) => {
                 if (status) {
@@ -45,11 +44,10 @@
                 }
                 if (!status) {
                     console.log("第二个promise");
-                    reject("222");
+                    reject("888");
                 }
             })
         };
-
         function promise3(status) {
             return new Promise((resolve, reject) => {
                 if (status) {
@@ -64,27 +62,28 @@
         };
 
         //调用
-        promise1(true).then(response => { //第1个
-            console.log(response);
-            return promise2(true);         //需要return一下第二个promise
-        }).then(res => {                  //第2个
-            console.log(res);
-            return promise3(true);
-        }).then(response => {
-            console.log(response);
-        }).catch(error => {
-            console.log(error);
-        });
+        // promise1(true).then(response => { //第1个
+        //     console.log(response);
+        //     return promise2(false);         //需要return一下第二个promise
+        // }).then(res => {                  //第2个
+        //     console.log(res);
+        //     return promise3(true);
+        // }).then(response => {
+        //     console.log(response);
+        // }).catch(error => {
+        //     console.log(error);
+        // });
 
         // all方法，数组内的promise必须全部成功(全部返回resolve)，才会执行then，只要有一个（返回reject）不成功就会执行catch
-        // Promise.all([promise1(true), promise2(true)]).then(response => {
-        //     console.log("成功调用成功");
-        // }).catch(error => {
-        //     console.log("有可能失败了");
-        // })
+        Promise.all([promise1(true), promise2(true), promise3(false)]).then(response => {
+            console.log("成功调用成功");
+        }).catch(error => {
+            console.log("有可能失败了");
+        })
+       
 
 
-        //race 数组，当在执行的时候，遇到返回结果resolve（成功），一直链式执行
+         //race 数组，当在执行的时候，遇到返回结果resolve（成功），一直链式执行
         //最终的解释：race只要有一个返回resolve，就代表成功。就会回调then。但是，如果第一个返回reject，那么就会失败catch
         Promise.race([promise1(true), promise2(true), promise3(false)]).then(response => {
             console.log("race成功调用的方法");
@@ -110,6 +109,8 @@
         // f4()
 
     </script>
+    <!-- 倒计时在登录和注册之间切换时，倒计时应该还在
+    倒计时 -->
 </body>
 
 </html>

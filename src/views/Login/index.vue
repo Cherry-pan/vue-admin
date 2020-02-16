@@ -75,6 +75,7 @@
  * 已经在request中引入了，request这个文件又导入了login.js中，这个文件又被引入到了index.vue中，为什么还要引入一下axios
  * 答：只引入了GetSms
  */
+import sha1 from "js-sha1";
 import axios from "axios";
 import { GetSms, Register, Login } from "@/api/login.js";
 import { reactive, ref, onMounted } from "@vue/composition-api";
@@ -197,6 +198,11 @@ export default {
     });
 
     /**
+     * 不建议在一个方法里做多件不同的事件（尽可能只做自己本身的事。不要做其他人的事情
+     * 尽量把相同的事情封装一个方法里面，通过调用函数进行执行
+     */
+
+    /**
      * 声明函数methods
      */
     // vue数据驱动视图渲染
@@ -211,8 +217,27 @@ export default {
       // 修改模块值
       model.value = data.type;
 
-      // 表单重置
+      // 调用清除表单数据的方法
+      resetFromData();
+
+      //调用清除倒计时方法
+      clearCountDown();
+    };
+
+    /**
+     * 清除表单数据
+     */
+    const resetFromData = () => {
       context.refs["loginForm"].resetFields();
+    };
+
+    /**
+     * 更改按钮状态
+     */
+    const updateButtonStatus = params => {
+      //传了对象进来
+      (codeButtonStatus.status = params.status),
+        (codeButtonStatus.text = params.text);
     };
 
     /**
@@ -231,8 +256,10 @@ export default {
       }
 
       // 改变获取验证码按钮的状态、改变获取验证码中的文字
-      codeButtonStatus.status = true;
-      codeButtonStatus.text = "发送中";
+      updateButtonStatus({
+        status: true,
+        text: "发送中"
+      });
 
       //开启定时器
       setTimeout(function() {
@@ -268,8 +295,10 @@ export default {
         time--;
         if (time === 0) {
           clearInterval(timer.value);
-          codeButtonStatus.status = false;
-          codeButtonStatus.text = "重新发送";
+          updateButtonStatus({
+            status: false,
+            text: "重新发送"
+          });
         } else {
           codeButtonStatus.text = `倒计时${time}秒`;
         }
@@ -281,7 +310,10 @@ export default {
      */
     const clearCountDown = () => {
       // 还原验证码按钮成默认状态
-      (codeButtonStatus.status = false), (codeButtonStatus.text = "获取验证码");
+      updateButtonStatus({
+        status: false,
+        text: "获取验证码"
+      });
       //  清除倒计时
       clearInterval(timer.value);
     };
@@ -307,15 +339,23 @@ export default {
     const login = () => {
       let data = {
         username: ruleForm.username,
-        password: ruleForm.password,
-        code: ruleForm.code
+        password: sha1(ruleForm.password),
+        code: ruleForm.code,
+        module: "login"
       };
-      Login(data)
+      context.root.$store
+        .dispatch("login", data)
         .then(response => {
+          /**
+           * 页面登录成功提示消息并且跳转到控制台
+           */
           console.log(response);
           context.root.$message({
             type: "success",
-            message: data.data.message
+            message: response.data.message
+          });
+          context.root.$router.push({
+            name: "Console"
           });
         })
         .catch(error => {
@@ -329,7 +369,7 @@ export default {
     const register = () => {
       let data = {
         username: ruleForm.username,
-        password: ruleForm.password,
+        password: sha1(ruleForm.password),
         code: ruleForm.code,
         module: "register"
       };
@@ -370,7 +410,9 @@ export default {
       timer,
       clearCountDown,
       login,
-      register
+      register,
+      resetFromData,
+      updateButtonStatus
     };
   }
 };
@@ -418,3 +460,5 @@ export default {
   }
 }
 </style>
+
+

@@ -13,6 +13,20 @@ module.exports = {
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   chainWebpack: (config) => {
     /**
+     * SVG文件的配置
+     */
+    const svgRule = config.module.rule("svg");
+    svgRule.uses.clear();
+    svgRule
+      .use("svg-sprite-loader")
+      .loader("svg-sprite-loader")
+      .options({
+        symbolId: "icon-[name]",
+        include: ["./src/icons"]
+      });
+
+
+    /**
      * 删除懒加载模块的 prefetch preload，降低带宽压力
      * https://cli.vuejs.org/zh/guide/html-and-static-assets.html#prefetch
      * https://cli.vuejs.org/zh/guide/html-and-static-assets.html#preload
@@ -27,6 +41,7 @@ module.exports = {
     config.resolve = { //配置解析别名
       extensions: ['.js', '.json', '.vue'], //自动添加文件名后缀
       alias: {
+        "vue": "vue/dist/vue.js", //vue文件指向改变
         "@": path.resolve(__dirname, './src'),
         "public": path.resolve(__dirname, './public'),
         "@c": path.resolve(__dirname, './src/components'),
@@ -49,11 +64,12 @@ module.exports = {
     // css预设器配置项
     loaderOptions: {
       sass: {
-        prependData: "@import '@/styles/main.scss';"
+        prependData: `@import '@/styles/main.scss';`
       }
     },
     // 启用 CSS modules for all css / pre-processor files.
-    modules: false
+    //modules: false
+    requireModuleExtension: true
   },
   // use thread-loader for babel & TS in production build
   // enabled by default if the machine has more than 1 cores
@@ -71,8 +87,8 @@ module.exports = {
     https: false,
     hotOnly: false,
     proxy: { // 设置代理
-      '/web': {        
-        target: 'http://www.web-jshtml.cn/productapi', //设置你调用的接口域名和端口号 别忘了加http
+      '/web': {
+        target: 'http://www.web-jshtml.cn/dependenciesapi', //设置你调用的接口域名和端口号 别忘了加http
         changeOrigin: true,
         pathRewrite: {
           '^/web': ''
