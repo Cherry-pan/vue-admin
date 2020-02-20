@@ -11,9 +11,9 @@
             alt
             style="width:40px;height:40px; border-radius: 50%;"
           />
-          <div class="user-info">管理员</div>
+          <div class="user-info">{{username}}</div>
         </div>
-        <div class="header-icon">
+        <div class="header-icon" @click="exit">
           <svg-icon iconClass="logout" class="logout"></svg-icon>
         </div>
       </div>
@@ -22,16 +22,32 @@
 </template>
 
 <script>
+import { computed } from "@vue/composition-api";
 export default {
   setup(props, { root }) {
+    const username = computed(() => root.$store.state.login.username);
     /***
      * 菜单的收缩
      */
     const navMenuState = () => {
       root.$store.commit("app/SET_COLLAPSE");
     };
+
+    /**
+     * 退出
+     */
+    const exit = () => {
+      root.$store.dispatch("login/exit").then(()=>{
+        root.$router.push({
+          name:"login"
+        })
+      });
+    };
+
     return {
-      navMenuState
+      navMenuState,
+      username,
+      exit
     };
   }
 };

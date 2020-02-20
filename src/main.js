@@ -13,16 +13,14 @@ import VueCompositionApi from '@vue/composition-api'
 // 自定义组件
 import '@/icons/index.js';
 
+// 路由守卫
+import "@/router/routGuard.js";
+
 Vue.use(ElementUI);
 Vue.use(VueCompositionApi)
 
 Vue.config.productionTip = false;
-router.beforeEach((to, from, next) => {
-  console.log(to)
-  console.log(from)
-  console.log(next)
-  next()
-}),
+
 new Vue({
   router,
   store,

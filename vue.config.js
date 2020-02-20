@@ -11,7 +11,7 @@ module.exports = {
   // https://vuejs.org/v2/guide/installation.html#Runtime-Compiler-vs-Runtime-only
   // webpack配置
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
-  chainWebpack: (config) => {
+  chainWebpack: (config) => { //chain : [tʃeɪn] 
     /**
      * SVG文件的配置
      */
@@ -88,7 +88,7 @@ module.exports = {
     hotOnly: false,
     proxy: { // 设置代理
       '/web': {
-        target: 'http://www.web-jshtml.cn/dependenciesapi', //设置你调用的接口域名和端口号 别忘了加http
+        target: 'http://www.web-jshtml.cn/dependenciesapi/token', //设置你调用的接口域名和端口号 别忘了加http
         changeOrigin: true,
         pathRewrite: {
           '^/web': ''

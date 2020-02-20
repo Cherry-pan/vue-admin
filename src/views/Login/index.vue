@@ -344,7 +344,7 @@ export default {
         module: "login"
       };
       context.root.$store
-        .dispatch("login", data)
+        .dispatch("login/login", data)
         .then(response => {
           /**
            * 页面登录成功提示消息并且跳转到控制台

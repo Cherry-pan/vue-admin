@@ -9,6 +9,8 @@
 </head>
 
 <body>
+    <div style="margin-bottom: 20px;border: 1px solid red">222</div>
+    <div style="margin-top: 10px;border: 1px solid pink">111</div>
     <script>
         //resolve,reject,all, race
         // resolve = then   reject = catch
@@ -107,6 +109,31 @@
         // }
 
         // f4()
+
+
+        console.log(1);
+        setTimeout(function(){
+            console.log(2);                //15762384
+            new Promise(function(resolve){
+                console.log(3);
+                resolve(4)
+            }).then(function(num){
+                console.log(num);
+                
+            })
+            console.log(8);
+            
+        },0)
+        new Promise(function(resolve){
+            console.log(5);
+            resolve(6);
+            
+        }).then(function(num){
+            console.log(num);
+            
+        })
+        console.log(7);
+        
 
     </script>
     <!-- 倒计时在登录和注册之间切换时，倒计时应该还在
