@@ -1,18 +1,30 @@
 //后台框架尺寸
 //菜单宽度
-$navMenu:250px;
-$navMenuMin:64px;
+$navMenu: 250px;
+$navMenuMin: 64px;
 // 头部高度
-$layoutHeader:75px;
+$layoutHeader: 75px;
 
 // 主颜色
-$mainColor:#f56c6c;
+$mainColor: #f56c6c;
 
 @mixin webkit($type, $value) {
-    -webkit-#{$type}: $value;
-    -moz-#{$type}: $value;
-    -ms-#{$type}: $value;
-    -o-#{$type}: $value;
-    #{$type}: $value;
+  -webkit-#{$type}: $value;
+  -moz-#{$type}: $value;
+  -ms-#{$type}: $value;
+  -o-#{$type}: $value;
+  #{$type}: $value;
 }
 
+@mixin labelDom($align,$width,$line-height:"normal") {
+  label {
+    width: $width+px;
+    line-height: $line-height+px;
+    float: left;
+    text-align: $align;
+    font-size: 13px;
+  }
+  .conten_wrap {
+    margin-left: $width+px;
+  }
+}

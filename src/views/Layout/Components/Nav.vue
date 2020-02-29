@@ -85,6 +85,7 @@ export default {
   height: 100vh;
   background-color: #344a5f;
   @include webkit(transition, all 0.3s ease 0s);
+  z-index: 999;
   svg {
     font-size: 20px;
     margin-right: 10px;

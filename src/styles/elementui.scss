@@ -29,3 +29,43 @@
     background-color: $mainColor !important;
   }
 }
+
+// table
+div .el-table {
+  th,
+  td {
+    text-align: center;
+  }
+  th {
+    font-weight: bold;
+    color: #344a5f;
+    font-size: 14px;
+  }
+}
+
+// 信息列表中的dialog
+.el-dialog__body {
+  padding: 30px 47px 30px 30px !important;
+  .el-form-item__content .el-button {
+    padding: 12px 30px !important;
+  }
+  .el-button + .el-button {
+    margin-left: 20px !important;
+  }
+  .el-form-item:last-child {
+    margin-top: 40px !important;
+  }
+  .el-textarea__inner {
+    height: 150px !important;
+  }
+}
+
+// 导航栏的右边框
+.el-menu {
+  border-right: none !important;
+}
+.edit {
+  .el-form-item__label {
+    text-align: left !important;
+  }
+}
