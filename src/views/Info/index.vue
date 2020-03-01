@@ -3,14 +3,14 @@
     <el-row :gutter="8">
       <el-col :span="4">
         <div class="label_wrap category">
-          <label>类型：</label>
+          <label>类别：</label>
           <div class="conten_wrap">
             <el-select v-model="categoryValue" style="width:100%;">
               <el-option
-                v-for="item in options"
-                :key="item.categioryValue"
-                :label="item.label"
-                :value="item.categoryValue"
+                v-for="item in options.category"
+                :key="item.id"
+                :label="item.category_name"
+                :value="item.id"
                 class="flex a-item"
                 style="padding-left:10px;box-sizing: border-box;"
               ></el-option>
@@ -102,9 +102,10 @@
 </template>
 
 <script>
-import { reactive, ref, watch } from "@vue/composition-api";
+import { reactive, ref, watch, onMounted } from "@vue/composition-api";
 import Dialog from "./dialog/info";
 import { global } from "@/utils/global3.0.js";
+import { common } from "@/api/common.js";
 export default {
   name: "infoIndex",
   components: {
@@ -112,16 +113,14 @@ export default {
   },
   setup(props, { root }) {
     // 声明出来
-    const { str:aaa, comfirm } = global();
-    // 监听str
-    // watch(() => {
-    //   console.log(aaa.value);
-    // });
+    const { str: aaa, comfirm } = global();
+    const { getInfoCategory, categoryItem } = common();
+
     /**
      * 数据
      */
     // ref
-    const categoryValue = ref("国际信息");
+    const categoryValue = ref("");
     const dialogInfo = ref(false);
     const dateValue = ref("");
     // 默认值
@@ -158,20 +157,9 @@ export default {
       }
     ]);
     // 类型
-    const options = reactive([
-      {
-        value: 1,
-        label: "国际信息"
-      },
-      {
-        value: 2,
-        label: "国内信息"
-      },
-      {
-        value: 3,
-        label: "行业信息"
-      }
-    ]);
+    const options = reactive({
+      category: []
+    });
     // 搜索关键字
     const searchOptions = reactive([
       {
@@ -220,6 +208,18 @@ export default {
     const confirmDelete = value => {
       // console.log(value);
     };
+
+    // 获取分类接口
+    // 监听
+    watch(
+      () => categoryItem.item,
+      value => {
+        options.category = value;
+      }
+    );
+    onMounted(() => {
+      getInfoCategory();
+    });
 
     return {
       // ref

@@ -2,6 +2,7 @@ import axios from "axios";
 import {
     Message
 } from 'element-ui';
+import { getToken, getUserName } from '@/utils/app.js';
 
 // 创建axios，赋给变量service
 const BASEURL = process.env.NODE_ENV === "production" ? "" : "/web";
@@ -23,9 +24,9 @@ service.interceptors.request.use(function (config) {
 
 
     //最终目的不是在请求添加参数
-    config.headers['token'] = '11111111'
-    config.headers['userID'] = "22222"
-    config.headers["sui"] = "33333 "
+    config.headers['tokey'] = getToken();
+    config.headers['UserName'] = getUserName();
+    
     return config;
 }, function (error) {
     // 对请求错误做些什么
