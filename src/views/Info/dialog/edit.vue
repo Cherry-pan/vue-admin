@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="新增"
+    title="修改"
     :visible.sync="data.dialogInfoVisibleFalg"
     @close="close"
     width="580px"
@@ -33,7 +33,8 @@
 
 <script>
 import { reactive, ref, watch } from "@vue/composition-api";
-import { addInfo,getList } from "@/api/news.js";
+import { addInfo, getList, editInfo } from "@/api/news.js";
+
 export default {
   name: "dialogInfo",
   props: {
@@ -45,10 +46,14 @@ export default {
     options: {
       type: Array,
       default: () => []
+    },
+    id: {
+      type: String,
+      default: ""
     }
   },
 
-  setup(props, { emit, root, refs }) {
+  setup(props, { emit, root,refs }) {
     const data = reactive({
       dialogInfoVisibleFalg: false, //弹窗标记
       submitLoading: false, //提交loading
@@ -76,7 +81,7 @@ export default {
      */
     // 重置表单
     const resetFields = () => {
-      refs.form.resetFields();
+       refs.form.resetFields();
     };
     const close = () => {
       data.dialogInfoVisibleFalg = false;
@@ -86,9 +91,11 @@ export default {
     };
     const onSubmit = () => {
       let questData = {
-        category: data.form.category,
+        id: props.id,
+        categoryId: data.form.category,
         title: data.form.title,
-        content: data.form.content
+        content: data.form.content,
+        imgUrl: data.form.imgUrl
       };
       if (!data.form.category || !data.form.title || !data.form.content) {
         root.$message({
@@ -98,7 +105,7 @@ export default {
         return false;
       } else {
         data.submitLoading = true;
-        addInfo(questData)
+        editInfo(questData)
           .then(res => {
             // console.log(res);
             root.$message({
@@ -106,7 +113,14 @@ export default {
               message: res.data.message
             });
             data.submitLoading = false;
-            getList();
+            /**
+             * 返回列表，手动修改指定的数据
+             */
+            // let aaa = data.categoryOptions.item.filter(r => r.id === props.id);
+            // console.log(aaa);
+
+             emit("getListEmit"); //暴力的直接调用接口     
+             //emit("callbackComponents",{function:"getList",data:111});     
           })
           .catch(error => {
             console.log(error);
@@ -120,14 +134,38 @@ export default {
     const openDialog = () => {
       resetFields();
       data.categoryOptions.item = props.options;
+      getInfo();
+    };
+    const getInfo = () => {
+      let requestData = {
+        pageNumber: 1,
+        pageSize: 1,
+        id: props.id
+      };
+      getList(requestData)
+        .then(res => {
+          let requestData = res.data.data.data[0];
+          data.form = {
+            title: requestData.title,
+            category: requestData.categoryId,
+            content: requestData.content
+          };
+        })
+        .catch(error => {
+          console.log(error);
+        });
     };
 
     return {
       data,
+      /**
+       * methods
+       */
       close,
       onSubmit,
       openDialog,
-      resetFields
+      resetFields,
+      getInfo
     };
   }
 };

@@ -69,3 +69,8 @@ div .el-table {
     text-align: left !important;
   }
 }
+
+// 日期选择
+.el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner{
+  width: 300px !important;
+}

@@ -17,7 +17,12 @@
                   round
                   @click="editCategory({data:firstItem,type:'category_first_edit'})"
                 >编辑</el-button>
-                <el-button type="success" size="mini" round>添加子级</el-button>
+                <el-button
+                  type="success"
+                  size="mini"
+                  round
+                  @click="handleAddChildren({data:firstItem,type:'category_first_edit'})"
+                >添加子级</el-button>
                 <el-button size="mini" round @click="DeleteCategoryComfirm(firstItem.id)">删除</el-button>
               </div>
             </h4>
@@ -79,7 +84,7 @@
 
 <script>
 import { addFirstCategory, deleteCategory, edit_category } from "@/api/news.js";
-import { reactive, ref, onMounted ,watch} from "@vue/composition-api";
+import { reactive, ref, onMounted, watch } from "@vue/composition-api";
 import { global } from "@/utils/global3.0.js";
 import { common } from "@/api/common.js";
 export default {
@@ -267,11 +272,22 @@ export default {
         });
     };
 
+    /**
+     * 添加二级菜单
+     */
+    const handleAddChildren = data => {
+      console.log(data);
+      
+      // formLabelAlign.categoryName = data.category_name;
+      category_sec_disabled.value = false;
+      submit_btn_disabled.value = false;
+    };
+
     // 监听
     watch(
       () => categoryItem.item,
       value => {
-        category.item =value;
+        category.item = value;
       }
     );
     /**
@@ -302,7 +318,8 @@ export default {
       cancelDel,
       editCategory,
       AddFirstCategory,
-      EditFirstCategory
+      EditFirstCategory,
+      handleAddChildren
     };
   }
 };

@@ -1,11 +1,26 @@
 import service from "@/utils/request.js";
 /**
- * 列表
+ * 获取信息列表
  */
+export function getList(data) {
+  return service.request({
+    method: "post",
+    url: "/news/getList/",
+    data
+  });
+}
 
 /**
  * 新增
+ *
  */
+export function addInfo(data) {
+  return service.request({
+    method: "post",
+    url: "/news/add/",
+    data
+  });
+}
 
 /**
  * 编辑
@@ -28,6 +43,13 @@ export function deleteCategory(data) {
     data
   });
 }
+export function deleteInfo(data) {
+  return service.request({
+    method: "post",
+    url: "/news/deleteInfo/",
+    data
+  });
+}
 /**
  * 添加一级分类
  */
@@ -46,6 +68,14 @@ export function getCategory(data) {
   return service.request({
     method: "post",
     url: "/news/getCategoryAll/",
+    data
+  });
+}
+// 修改信息
+export function editInfo(data) {
+  return service.request({
+    method: "post",
+    url: "/news/editInfo/",
     data
   });
 }
