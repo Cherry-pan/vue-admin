@@ -61,10 +61,31 @@ export function addFirstCategory(data) {
   });
 }
 
+  /**
+   * 添加子集分类
+   */
+  export function addChildrenCategory(data) {
+    return service.request({
+      method: "post",
+      url: "/news/addChildrenCategory/",
+      data
+    });
+  }
+
 /**
  * 获取信息分类
  */
 export function getCategory(data) {
+  return service.request({
+    method: "post",
+    url: "/news/getCategory/",
+    data
+  });
+}
+/**
+ * 获取所有信息分类（包含子集）
+ */
+export function getCategoryAll(data) {
   return service.request({
     method: "post",
     url: "/news/getCategoryAll/",

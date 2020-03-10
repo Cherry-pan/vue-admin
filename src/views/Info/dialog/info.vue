@@ -117,7 +117,7 @@ export default {
       data.dialogInfoVisibleFalg = false;
     };
     // 打开对话框，加载分类的数据
-    const openDialog = () => {
+    const openDialog = () => {      
       resetFields();
       data.categoryOptions.item = props.options;
     };

@@ -107,9 +107,9 @@
     </el-row>
 
     <!-- 弹窗   @close="cancleDialog" -->
-    <Dialog :flag.sync="dialogInfo" :options="options.category"></Dialog>
+    <Dialog :flag.sync="dialogInfo" :options="options.category.data"></Dialog>
     <!-- 修改弹窗 -->
-      <DialogEdit :flag.sync="dialogInfoEdit" :id="infoId" :options="options.category" @getListEmit="GetList"></DialogEdit>
+      <DialogEdit :flag.sync="dialogInfoEdit" :id="infoId" :options="options.category.data" @getListEmit="GetList"></DialogEdit>
   </div>
 </template>
 
@@ -119,9 +119,8 @@ import Dialog from "./dialog/info";
 import DialogEdit from "./dialog/edit";
 import { global } from "@/utils/global3.0.js";
 import { common } from "@/api/common.js";
-import { getList } from "@/api/news.js";
 import { formatDate } from "@/utils/timestamp";
-import { deleteInfo } from "@/api/news.js";
+import { deleteInfo,getList } from "@/api/news.js";
 export default {
   name: "infoIndex",
   components: {
@@ -195,10 +194,10 @@ export default {
     /**
      * 匹配分类
      */
-    const toCategory = row => {
+    const toCategory = row => {        
       // 调用一个函数，返回一个新的值，替换原始值  return 1111
       // filter返回的是数组
-      let categoryName = options.category.filter(
+      let categoryName = options.category.data.filter(
         r => r.id === row.categoryId
       )[0];
       return categoryName.category_name;
@@ -334,7 +333,7 @@ export default {
     }
     onMounted(() => {
       // v3.0
-      // getInfoCategory();
+      // getInfoCategoryAll();
       // v2.0
       root.$store
         .dispatch("common/getCategory")

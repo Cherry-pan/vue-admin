@@ -21,7 +21,7 @@
                   type="success"
                   size="mini"
                   round
-                  @click="handleAddChildren({data:firstItem,type:'category_first_edit'})"
+                  @click="handleAddChildren({data:firstItem,type:'category_childred_add'})"
                 >添加子级</el-button>
                 <el-button size="mini" round @click="DeleteCategoryComfirm(firstItem.id)">删除</el-button>
               </div>
@@ -52,14 +52,19 @@
             :model="formLabelAlign"
             ref="formName"
           >
-            <el-form-item label="一级分类名称" v-if="category_first_input">
+            <el-form-item label="一级分类名称" prop="categoryName" v-if="category_first_input">
               <el-input
                 v-model="formLabelAlign.categoryName"
                 style="width:300px;"
                 :disabled="category_first_disabled"
               ></el-input>
             </el-form-item>
-            <el-form-item label="二级分类名称" style="margin:20px 0;" v-if="category_sec_input">
+            <el-form-item
+              label="二级分类名称"
+              prop="seccategoryName"
+              style="margin:20px 0;"
+              v-if="category_sec_input"
+            >
               <el-input
                 v-model="formLabelAlign.seccategoryName"
                 style="width:300px;"
@@ -83,7 +88,12 @@
 </template>
 
 <script>
-import { addFirstCategory, deleteCategory, edit_category } from "@/api/news.js";
+import {
+  addFirstCategory,
+  deleteCategory,
+  edit_category,
+  addChildrenCategory
+} from "@/api/news.js";
 import { reactive, ref, onMounted, watch } from "@vue/composition-api";
 import { global } from "@/utils/global3.0.js";
 import { common } from "@/api/common.js";
@@ -92,7 +102,7 @@ export default {
   setup(props, { root, refs }) {
     // 声明
     const { comfirm } = global();
-    const { getInfoCategory, categoryItem } = common();
+    const { getInfoCategory, categoryItem, getInfoCategoryAll } = common();
     // ref
     const labelPosition = ref("right");
     const category_first_input = ref(true);
@@ -128,6 +138,10 @@ export default {
       if (catagory_type.value === "category_first_edit") {
         EditFirstCategory();
       }
+      // 添加子集
+      if (catagory_type.value === "category_childred_add") {
+        AddChildrenCategory();
+      }
     };
     // 添加分类
     const AddFirstCategory = () => {
@@ -154,9 +168,7 @@ export default {
           category.item.push(res.data.data);
 
           // 清除表单内容
-          // refs[formName].resetFields();
-          formLabelAlign.categoryName = "";
-          formLabelAlign.seccategoryName = "";
+          refs[formName].resetFields();
 
           /**
            *  添加分类，调用分类的接口，达到刷新的效果
@@ -169,15 +181,36 @@ export default {
         .catch(error => {
           console.log(error);
           submit_btn_onloading.value = false;
-          formLabelAlign.categoryName = "";
-          formLabelAlign.seccategoryName = "";
+          // 清除表单内容
+          refs[formName].resetFields();
+        });
+    };
+    // 添加子集分类
+    const AddChildrenCategory = () => {
+      if (!formLabelAlign.seccategoryName) {
+        root.$message({
+          type: "error",
+          message: "子类名不能为空"
+        });
+        return false;
+      }
+      let requestData = {
+        categoryName: formLabelAlign.seccategoryName,
+        parentId: category.current.id
+      };
+      addChildrenCategory()
+        .then(res => {
+          console.log(res);
+        })
+        .catch(error => {
+          console.log(error);
         });
     };
     const addFirst = ({ type }) => {
       // 当点击添加一级分类时，清空数据信息
       catagory_type.value = type;
-      formLabelAlign.categoryName = "";
-      formLabelAlign.seccategoryName = "";
+      // 清除表单内容
+      refs[formName].resetFields();
       category_first_input.value = true;
       category_sec_input.value = false;
       category_first_disabled.value = false;
@@ -276,9 +309,11 @@ export default {
      * 添加二级菜单
      */
     const handleAddChildren = data => {
-      console.log(data);
-      
-      // formLabelAlign.categoryName = data.category_name;
+      // 点击改变类型
+      catagory_type.value = data.type;
+      // 存储数据
+      category.current = data.data;
+      formLabelAlign.categoryName = data.data.category_name;
       category_sec_disabled.value = false;
       submit_btn_disabled.value = false;
     };
@@ -294,7 +329,8 @@ export default {
      * 生命周期onmounted挂载完成
      */
     onMounted(() => {
-      getInfoCategory();
+      getInfoCategoryAll();
+      // getInfoCategory()
     });
     return {
       // ref
@@ -319,7 +355,8 @@ export default {
       editCategory,
       AddFirstCategory,
       EditFirstCategory,
-      handleAddChildren
+      handleAddChildren,
+      AddChildrenCategory
     };
   }
 };
