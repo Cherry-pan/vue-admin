@@ -8,7 +8,6 @@ const whiteRouter = ["/login"]; //indexOf方法，判断数组中是否存在指
 // 路由守卫
 router.beforeEach((to, from, next) => {
   if (getToken()) {
-    console.log(to.path);
     if (to.path === "/login") {
       removeToken();
       removeUserName();
@@ -25,9 +24,7 @@ router.beforeEach((to, from, next) => {
      * 2.to = index
      */
     // 路由动态添加，分配菜单，每个角色分配不同的菜单
-    console.log("存在");
   } else {
-    console.log("不存在");
     if (whiteRouter.indexOf(to.path) !== -1) {
       //存在
       next();
