@@ -17,7 +17,7 @@ export function common() {
       });
   };
   /**
-   * 获取全部分类
+   * 获取全部分类[带有子集分类]
    */
   const getInfoCategoryAll = () => {
     getCategoryAll({})

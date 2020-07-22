@@ -7,7 +7,7 @@
           <div class="conten_wrap">
             <el-select v-model="categoryValue" style="width:100%;">
               <el-option
-                v-for="item in options.category"
+                v-for="item in options.category.data"
                 :key="item.id"
                 :label="item.category_name"
                 :value="item.id"
@@ -109,7 +109,12 @@
     <!-- 弹窗   @close="cancleDialog" -->
     <Dialog :flag.sync="dialogInfo" :options="options.category.data"></Dialog>
     <!-- 修改弹窗 -->
-      <DialogEdit :flag.sync="dialogInfoEdit" :id="infoId" :options="options.category.data" @getListEmit="GetList"></DialogEdit>
+    <DialogEdit
+      :flag.sync="dialogInfoEdit"
+      :id="infoId"
+      :options="options.category.data"
+      @getListEmit="GetList"
+    ></DialogEdit>
   </div>
 </template>
 
@@ -120,16 +125,17 @@ import DialogEdit from "./dialog/edit";
 import { global } from "@/utils/global3.0.js";
 import { common } from "@/api/common.js";
 import { formatDate } from "@/utils/timestamp";
-import { deleteInfo,getList } from "@/api/news.js";
+import { deleteInfo, getList } from "@/api/news.js";
 export default {
   name: "infoIndex",
   components: {
-    Dialog,DialogEdit
+    Dialog,
+    DialogEdit
   },
   setup(props, { root }) {
     // 声明出来
     const { str: aaa, comfirm } = global();
-    const { getInfoCategory, categoryItem } = common();
+    // const { getInfoCategory, categoryItem } = common();
 
     /**
      * 数据
@@ -194,12 +200,14 @@ export default {
     /**
      * 匹配分类
      */
-    const toCategory = row => {        
+    const toCategory = row => {
       // 调用一个函数，返回一个新的值，替换原始值  return 1111
       // filter返回的是数组
       let categoryName = options.category.data.filter(
         r => r.id === row.categoryId
       )[0];
+      console.log(categoryName, "----------");
+
       return categoryName.category_name;
     };
 
@@ -269,16 +277,15 @@ export default {
       }
     }
      */
-  
 
     // 获取分类接口
     // 监听
-    watch(
-      () => categoryItem.item,
-      value => {
-        options.category = value;
-      }
-    );
+    // watch(
+    //   () => categoryItem.item,
+    //   value => {
+    //     options.category = value;
+    //   }
+    // );
 
     /**
     点击搜索
@@ -327,23 +334,29 @@ export default {
     /**
      * 修改弹窗内容
      */
-    const editInfo = (id)=>{
+    const editInfo = id => {
       infoId.value = id;
       dialogInfoEdit.value = true;
-    }
-    onMounted(() => {
-      // v3.0
-      // getInfoCategoryAll();
-      // v2.0
+    };
+
+    /**
+     * vuex 获取分类类别
+     */
+    const getInfoCategory = () => {
       root.$store
         .dispatch("common/getCategory")
         .then(res => {
-          // console.log(res);
           options.category = res;
         })
         .catch(error => {
           console.log(error);
         });
+    };
+    onMounted(() => {
+      // 第一种方法v3.0
+      // getInfoCategory();
+      // 第二种方法v2.0，vuex
+      getInfoCategory();
 
       // 获取列表
       GetList();
@@ -375,7 +388,9 @@ export default {
       toDate,
       toCategory,
       handleSelectionChange,
-      fmtData,GetList,editInfo,
+      fmtData,
+      GetList,
+      editInfo
     };
   }
 };

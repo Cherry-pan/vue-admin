@@ -35,8 +35,13 @@
               >
                 {{childrenItem.category_name}}
                 <div class="button-group">
-                  <el-button type="danger" size="mini" round>编辑</el-button>
-                  <el-button size="mini" round>删除</el-button>
+                  <el-button
+                    type="danger"
+                    size="mini"
+                    round
+                    @click="editCategory({data:childrenItem,type:'category_second_edit'})"
+                  >编辑</el-button>
+                  <el-button size="mini" round @click="DeleteCategoryComfirm(childrenItem.id)">删除</el-button>
                 </div>
               </li>
             </ul>
@@ -93,6 +98,7 @@ import {
   deleteCategory,
   edit_category,
   addChildrenCategory
+  // getCategoryAll
 } from "@/api/news.js";
 import { reactive, ref, onMounted, watch } from "@vue/composition-api";
 import { global } from "@/utils/global3.0.js";
@@ -168,7 +174,7 @@ export default {
           category.item.push(res.data.data);
 
           // 清除表单内容
-          refs[formName].resetFields();
+          refs.formName.resetFields();
 
           /**
            *  添加分类，调用分类的接口，达到刷新的效果
@@ -182,7 +188,7 @@ export default {
           console.log(error);
           submit_btn_onloading.value = false;
           // 清除表单内容
-          refs[formName].resetFields();
+          refs.formName.resetFields();
         });
     };
     // 添加子集分类
@@ -198,19 +204,20 @@ export default {
         categoryName: formLabelAlign.seccategoryName,
         parentId: category.current.id
       };
-      addChildrenCategory()
-        .then(res => {
-          console.log(res);
-        })
-        .catch(error => {
-          console.log(error);
+      addChildrenCategory(requestData).then(res => {
+        console.log(res);
+        root.$message({
+          type: "success",
+          message: res.data.message
         });
+        getInfoCategoryAll()
+      });
     };
     const addFirst = ({ type }) => {
       // 当点击添加一级分类时，清空数据信息
       catagory_type.value = type;
       // 清除表单内容
-      refs[formName].resetFields();
+      refs.formName.resetFields();
       category_first_input.value = true;
       category_sec_input.value = false;
       category_first_disabled.value = false;
@@ -250,6 +257,7 @@ export default {
             message: res.data.message,
             type: "success"
           });
+          getInfoCategoryAll();
         })
         .catch(error => {
           console.log(error);
@@ -268,8 +276,13 @@ export default {
       category_sec_input.value = false;
       // 一级分类名称输入还原名称
       formLabelAlign.categoryName = data.category_name;
-      catagory_type.value = type;
+      catagory_type.value = type;  
       category.current = data;
+      if(catagory_type.value == "category_second_edit"){
+        category_first_disabled.value = true;
+      }
+      // 二级分类名称还原
+      formLabelAlign.seccategoryName = data.category_name;
     };
     // 调用修改编辑的接口
     const EditFirstCategory = () => {
@@ -330,10 +343,9 @@ export default {
      */
     onMounted(() => {
       getInfoCategoryAll();
-      // getInfoCategory()
+      // getInfoCategory();
     });
     return {
-      // ref
       category_first_input,
       catagory_type,
       category_sec_input,

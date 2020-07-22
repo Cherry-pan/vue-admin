@@ -87,15 +87,17 @@ export default {
     const onSubmit = () => {
       let questData = {
         category: data.form.category,
+        // category: "qiongqiong",
         title: data.form.title,
         content: data.form.content
       };
+      console.log(questData,"-----------");
+      
       if (!data.form.category || !data.form.title || !data.form.content) {
         root.$message({
           type: "error",
           message: "字段名不能为空"
         });
-        return false;
       } else {
         data.submitLoading = true;
         addInfo(questData)
@@ -120,6 +122,8 @@ export default {
     const openDialog = () => {      
       resetFields();
       data.categoryOptions.item = props.options;
+      console.log(props.options,"000000000");
+      
     };
 
     return {
