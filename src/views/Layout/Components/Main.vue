@@ -33,28 +33,28 @@ export default {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  padding-right: 30px;
+  padding-right: 10px;
   @include webkit(transition, all 0.3s ease 0s);
   @include webkit(box-sizing, border-box);
 }
 .main-content {
-  padding-top: $layoutHeader + 30;
-  padding-left: $navMenu + 30;
+  padding-top: $layoutHeader + 20;
+  padding-left: $navMenu + 20;
   background-color: #f8f6f9;
 }
 .open {
   .main-content {
-    padding-left: $navMenu + 30;
+    padding-left: $navMenu + 20;
   }
 }
 .close {
   .main-content {
-    padding-left: $navMenuMin + 30;
+    padding-left: $navMenuMin + 20;
   }
 }
 .content {
-  padding-top: 30px;
-  padding-left: 30px;
+  padding-top: 10px;
+  padding-left: 10px;
   background-color: white;
 }
 </style>
