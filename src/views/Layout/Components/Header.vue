@@ -7,7 +7,7 @@
       <div class="flex">
         <div class="flex a-item">
           <img
-            src="https://i0.hdslb.com/bfs/face/ab8f7c88f46fd060bb6f661c8695604aae61a515.jpg@96w_96h_100Q_1c.webp"
+            src="https://dss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=78563377,2031075407&fm=26&gp=0.jpg"
             alt
             style="width:40px;height:40px; border-radius: 50%;"
           />

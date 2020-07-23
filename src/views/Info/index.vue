@@ -78,11 +78,15 @@
       <el-table-column prop="title" label="标题" width="450"></el-table-column>
       <el-table-column prop="categoryId" label="类别" width="130" :formatter="toCategory"></el-table-column>
       <el-table-column prop="createDate" label="日期" width="150" :formatter="toDate"></el-table-column>
-      <el-table-column prop="name" label="管理员" width="90"></el-table-column>
-      <el-table-column prop="address" label="操作">
+      <el-table-column prop="user" label="管理员" width="90"></el-table-column>
+      <el-table-column prop="operation" label="操作">
         <template slot-scope="scope">
           <el-button size="mini" type="danger" @click="deleteItems(scope.row.id)">删除</el-button>
           <el-button size="mini" type="success" @click="editInfo(scope.row.id)">编辑</el-button>
+          <!-- <router-link target="_blank" :to="{name:'editDetail',params:{id:scope.row.id}}" class="margin-left-10">
+            <el-button size="mini" type="success">编辑详情</el-button>
+          </router-link>-->
+          <el-button size="mini" type="success" @click="editDetail(scope.row)">编辑详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -203,12 +207,11 @@ export default {
     const toCategory = row => {
       // 调用一个函数，返回一个新的值，替换原始值  return 1111
       // filter返回的是数组
-      let categoryName = options.category.data.filter(
-        r => r.id === row.categoryId
-      )[0];
-      console.log(categoryName, "----------");
-
-      return categoryName.category_name;
+      // let categoryName = options.category.data.filter(
+      //   r => r.id === row.categoryId
+      // )[0];
+      // console.log(categoryName, "----------");
+      // return categoryName.category_name;
     };
 
     /**
@@ -352,6 +355,51 @@ export default {
           console.log(error);
         });
     };
+    /**
+     * 编辑详情
+     */
+    const editDetail = data => {
+      // 手动配置路由
+      // root.$router.push({
+      //   path:`/editDetail/${data.id}/${data.title}`
+      // })
+      /**
+       * 提前将数据存储起来
+       */
+      // root.$store.commit("editDetail/SET_ID", data.id);
+      // root.$store.commit("editDetail/SET_TITLE", data.title);
+
+      root.$store.commit("editDetail/UPDARE_STATE_VALUE", {
+        id: {
+          value: data.id,
+          sessionKey: "infoId",
+          sessionStorage: true
+        },
+        title: {
+          value: data.title,
+          sessionKey: "infoTitle",
+          sessionStorage: true
+        }
+      });
+      root.$router.push({
+        name: "editDetail",
+        params: {
+          id: data.id,
+          title: data.title
+        }
+      });
+      /**
+       * 新窗口打开
+       */
+      // let routerDate = root.$router.resolve({
+      //   name: "editDetail",
+      //   query: {
+      //     id: data.id,
+      //     title: data.title
+      //   },
+      // });
+      // window.open(routerDate.href,"_blank");
+    };
     onMounted(() => {
       // 第一种方法v3.0
       // getInfoCategory();
@@ -390,7 +438,8 @@ export default {
       handleSelectionChange,
       fmtData,
       GetList,
-      editInfo
+      editInfo,
+      editDetail
     };
   }
 };

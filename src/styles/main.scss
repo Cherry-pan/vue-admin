@@ -9,18 +9,29 @@
 .pull-right {
     float: right;
 }
-.flex{
+
+.flex {
     display: flex;
 }
-.just-c{
+
+.just-c {
     justify-content: space-between;
 }
-.a-item{
+
+.a-item {
     align-items: center;
 }
-.j-items{
+
+.j-items {
     justify-items: center;
 }
-.red{
+
+.red {
     border: 1px solid red;
+}
+
+@for $i from 1 through 110 {
+    .margin-left-#{$i} {
+        margin-left: (1px*$i);
+    }
 }

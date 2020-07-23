@@ -84,11 +84,12 @@ export default {
       emit("update:flag", false);
       // root.$emit("close", false); //需要做逻辑处理，使用回调，反之可以使用修饰器
     };
-    const onSubmit = () => {
+    const onSubmit = () => {   
       let questData = {
+        categoryId:data.form.category,
         category: data.form.category,
-        // category: "qiongqiong",
         title: data.form.title,
+        imgUrl:data.form.title,
         content: data.form.content
       };
       console.log(questData,"-----------");
@@ -121,9 +122,7 @@ export default {
     // 打开对话框，加载分类的数据
     const openDialog = () => {      
       resetFields();
-      data.categoryOptions.item = props.options;
-      console.log(props.options,"000000000");
-      
+      data.categoryOptions.item = props.options;      
     };
 
     return {
