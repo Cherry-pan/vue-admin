@@ -32,6 +32,16 @@ export function edit_category(data) {
     data
   });
 }
+/**
+ * 编辑详情
+ */
+export function editInfo(data) {
+  return service.request({
+    method: "post",
+    url: "/news/editInfo/",
+    data
+  });
+}
 
 /**
  * 删除
@@ -61,16 +71,16 @@ export function addFirstCategory(data) {
   });
 }
 
-  /**
-   * 添加子集分类
-   */
-  export function addChildrenCategory(data) {
-    return service.request({
-      method: "post",
-      url: "/news/addChildrenCategory/",
-      data
-    });
-  }
+/**
+ * 添加子集分类
+ */
+export function addChildrenCategory(data) {
+  return service.request({
+    method: "post",
+    url: "/news/addChildrenCategory/",
+    data
+  });
+}
 
 /**
  * 获取信息分类
@@ -89,14 +99,6 @@ export function getCategoryAll(data) {
   return service.request({
     method: "post",
     url: "/news/getCategoryAll/",
-    data
-  });
-}
-// 修改信息
-export function editInfo(data) {
-  return service.request({
-    method: "post",
-    url: "/news/editInfo/",
     data
   });
 }

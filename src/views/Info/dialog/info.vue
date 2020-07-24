@@ -33,7 +33,7 @@
 
 <script>
 import { reactive, ref, watch } from "@vue/composition-api";
-import { addInfo,getList } from "@/api/news.js";
+import { addInfo } from "@/api/news.js";
 export default {
   name: "dialogInfo",
   props: {
@@ -84,16 +84,14 @@ export default {
       emit("update:flag", false);
       // root.$emit("close", false); //需要做逻辑处理，使用回调，反之可以使用修饰器
     };
-    const onSubmit = () => {   
+    const onSubmit = () => {
       let questData = {
-        categoryId:data.form.category,
-        category: data.form.category,
+        categoryId: data.form.category,
         title: data.form.title,
-        imgUrl:data.form.title,
-        content: data.form.content
+        content: data.form.content,
       };
-      console.log(questData,"-----------");
-      
+      console.log(questData, "-----------");
+
       if (!data.form.category || !data.form.title || !data.form.content) {
         root.$message({
           type: "error",
@@ -109,7 +107,10 @@ export default {
               message: res.data.message
             });
             data.submitLoading = false;
-            getList();
+            // 关闭弹窗
+            close();
+            // 回调父级数据
+            emit("getListEmit");
           })
           .catch(error => {
             console.log(error);
@@ -120,9 +121,9 @@ export default {
       data.dialogInfoVisibleFalg = false;
     };
     // 打开对话框，加载分类的数据
-    const openDialog = () => {      
+    const openDialog = () => {
       resetFields();
-      data.categoryOptions.item = props.options;      
+      data.categoryOptions.item = props.options;
     };
 
     return {

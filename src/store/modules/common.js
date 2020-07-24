@@ -1,4 +1,12 @@
-import { getCategory } from "@/api/news.js";
+import {
+  getCategory
+} from "@/api/news.js";
+const state = {
+  qiNiuURL: "http://www-web-jshtml-cn-idva7mx.web-jshtml.cn/"
+}
+const getters = {
+  qiNiuURL: state => state.qiNiuURL
+}
 const actions = {
   getCategory(context, data) {
     return new Promise((resolve, reject) => {
@@ -13,4 +21,9 @@ const actions = {
     });
   }
 };
-export default { namespaced: true, actions };
+export default {
+  namespaced: true,
+  state,
+  getters,
+  actions
+};

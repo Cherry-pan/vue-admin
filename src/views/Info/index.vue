@@ -111,7 +111,7 @@
     </el-row>
 
     <!-- 弹窗   @close="cancleDialog" -->
-    <Dialog :flag.sync="dialogInfo" :options="options.category.data"></Dialog>
+    <Dialog :flag.sync="dialogInfo" :options="options.category.data" @getListEmit="GetList"></Dialog>
     <!-- 修改弹窗 -->
     <DialogEdit
       :flag.sync="dialogInfoEdit"
@@ -210,7 +210,6 @@ export default {
       // let categoryName = options.category.data.filter(
       //   r => r.id === row.categoryId
       // )[0];
-      // console.log(categoryName, "----------");
       // return categoryName.category_name;
     };
 
