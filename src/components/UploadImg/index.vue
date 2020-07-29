@@ -28,7 +28,6 @@ export default {
     }
   },
   setup(props, { root, emit }) {
-    console.log(props.config);
     /**
      * reactive
      */

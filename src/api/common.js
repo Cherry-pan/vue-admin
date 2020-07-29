@@ -1,5 +1,10 @@
-import { getCategory, getCategoryAll } from "@/api/news.js";
-import { reactive } from "@vue/composition-api";
+import {
+  getCategory,
+  getCategoryAll
+} from "@/api/news.js";
+import {
+  reactive
+} from "@vue/composition-api";
 import service from "@/utils/request.js";
 export function common() {
   const categoryItem = reactive({
@@ -24,7 +29,7 @@ export function common() {
     getCategoryAll({})
       .then(res => {
         console.log(res);
-        
+
         categoryItem.item = res.data.data;
       })
       .catch(error => {
@@ -46,5 +51,23 @@ export function qiNiu(data) {
     method: "post",
     url: "/uploadImgToken/",
     data
+  });
+}
+
+/**
+ * 初始化表格数据
+ * @param {
+ *   username: "",  用户名:Sting
+     truename: "",  真实姓名:Sting
+     phone: null,   电话号码:number
+     pageNumber: 1, 真实姓名:number
+     pageSize: 10   真实姓名:number
+ * } params
+ */
+export function loadTableData(params) {
+  return service.request({
+    method: params.methods || "post",
+    url: params.requestURL,
+    data: params.data || {}
   });
 }

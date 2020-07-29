@@ -39,16 +39,11 @@
         <div class="label_wrap keyWords">
           <label>关键字：&nbsp;&nbsp;</label>
           <div class="conten_wrap">
-            <el-select v-model="selectKey" style="width:100%;">
-              <el-option
-                v-for="item in searchOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-                class="flex a-item"
-                style="padding-left:10px;box-sizing: border-box;"
-              ></el-option>
-            </el-select>
+            <SelectValue
+              :config="data.configOptions"
+              class="flex a-item"
+              style="padding-left:10px;box-sizing: border-box;"
+            ></SelectValue>
           </div>
         </div>
       </el-col>
@@ -130,11 +125,14 @@ import { global } from "@/utils/global3.0.js";
 import { common } from "@/api/common.js";
 import { formatDate } from "@/utils/timestamp";
 import { deleteInfo, getList } from "@/api/news.js";
+// selectValue
+import SelectValue from "@c/Select/index";
 export default {
   name: "infoIndex",
   components: {
     Dialog,
-    DialogEdit
+    DialogEdit,
+    SelectValue
   },
   setup(props, { root }) {
     // 声明出来
@@ -168,16 +166,12 @@ export default {
       category: []
     });
     // 搜索关键字
-    const searchOptions = reactive([
-      {
-        value: "id",
-        label: "ID"
-      },
-      {
-        value: "title",
-        label: "标题"
+    const data = reactive({
+      configOptions: {
+        initData: ["id", "title"]
       }
-    ]);
+    });
+
     // 页码
     const page = reactive({
       pageNumber: 1,
@@ -422,9 +416,9 @@ export default {
       deleteInfoId,
       dialogInfoEdit,
       // reactive
-      searchOptions,
       tableData,
       options,
+      data,
       // 方法
       handleCurrentChange,
       handleSizeChange,
