@@ -1,8 +1,13 @@
 <template>
   <div>
-    <el-table :data="tableData" border style="width: 100%">
-      <el-table-column v-if="tableConfig.selection" type="selection" width="55"></el-table-column>
-      <template v-for="item in tableConfig.tHead">
+    <el-table
+      :data="data.tableData"
+      border
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column v-if="data.tableConfig.selection" type="selection" width="55"></el-table-column>
+      <template v-for="item in data.tableConfig.tHead">
         <!-- slot -->
         <el-table-column
           :key="item.field"
@@ -36,19 +41,28 @@
         ></el-table-column>
       </template>
     </el-table>
-
-    <!-- 页码 -->
-    <el-pagination
-      v-if="tableConfig.paginationShowPage"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="paginationData.currentPage"
-      :page-sizes="paginationData.pageSizes"
-      :page-size="paginationData.pageSize"
-      :layout="tableConfig.paginationLayout"
-      background
-      :total="paginationData.total"
-    ></el-pagination>
+    <div class="tableFooter">
+      <el-row class="flex a-item">
+        <el-col :span="4">
+          <slot name="tableFooter"></slot>
+        </el-col>
+        <el-col :span="20" class="flex flex-end a-item">
+          <!-- 页码 -->
+          <el-pagination
+            class="pull-right"
+            v-if="data.tableConfig.paginationShowPage"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="paginationData.currentPage"
+            :page-sizes="paginationData.pageSizes"
+            :page-size="paginationData.pageSize"
+            :layout="data.tableConfig.paginationLayout"
+            background
+            :total="paginationData.total"
+          ></el-pagination>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -60,19 +74,35 @@ import {
   onMounted,
   onBeforeMount
 } from "@vue/composition-api";
-import tableLoadData from "@/mixins/tableLoadData.js";
-import pagination from "@/mixins/pagination.js";
+
+import { loadData } from "./tableLoadData";
+import { pageRecord } from "./pageRecord";
+import { pagination } from "./paginationHook";
 export default {
   name: "table",
   props: {
     config: {
       type: Object,
       default: () => {}
+    },
+    tableRow: {
+      type: Object,
+      default: () => {}
     }
   },
-  mixins: [tableLoadData,pagination],
-  data() {
-    return {
+  setup(props, { root, emit }) {
+    // 加载数据
+    const { tableData, tableLoadData } = loadData({ root });
+    // 页码记录
+    const { aa } = pageRecord({ root });
+    // 页码
+    const {
+      paginationData,
+      handleSizeChange,
+      handleCurrentChange,
+      tableTotal
+    } = pagination({ root });
+    const data = reactive({
       tableConfig: {
         tHead: [],
         selection: true,
@@ -83,73 +113,82 @@ export default {
       },
       btnValue: "",
       // 表格
-      tableData: [
-        {
-          email: "605992259@qq.com",
-          name: "xxx",
-          mobilephone: 13218009875,
-          area: "南京市",
-          role: "管理员"
-        },
-        {
-          email: "605992259@qq.com",
-          name: "x1111x",
-          mobilephone: 13218009875,
-          area: "南京市",
-          role: "管理员"
-        }
-      ],
+      tableData: [],
       configOptions: {
         initData: ["mobile", "name"]
       }
+      // 页码
+    });
+    /**
+     * methods
+     */
+    // 当勾选复选框发生变化时
+    const handleSelectionChange = val => {
+      let checkedBox = {
+        ids: val.map(item => item.id)
+      };
+      emit("update:tableRow", checkedBox);
     };
-  },
-  /**
-   * watch
-   */
-  // 数据监听
-  // watch(
-  //   [() => tableData.item, () => tableData.total],
-  //   //第一次监听，是空的
-  //   ([tableData, total]) => {
-  //     data.tableData = tableData;
-  //     tableTotal(total);
-  //   }
-  // );
-  // // 页码监听
-  // watch(
-  //   [() => paginationData.currentPage, () => paginationData.pageSize],
-  //   ([currentPage, pageSize]) => {
-  //     if (data.tableConfig.request.data) {
-  //       data.tableConfig.request.data.pageNumber = currentPage;
-  //       data.tableConfig.request.data.pageSize = pageSize;
-  //       tableLoadData(data.tableConfig.request);
-  //     }
-  //   }
-  // );
-  watch: {},
-  /**
-   * methods
-   */
-  methods: {
-    // 初始化数据
-    initTableConfig() {
-      let configData = this.config;
-      let keys = Object.keys(this.tableConfig); //数组
+    /**
+     * watch
+     */
+    // 数据监听
+    watch(
+      [() => tableData.item, () => tableData.total],
+      //第一次监听，是空的
+      ([tableData, total]) => {
+        data.tableData = tableData;
+        tableTotal(total);
+      }
+    );
+    // 页码监听
+    watch(
+      [() => paginationData.currentPage, () => paginationData.pageSize],
+      ([currentPage, pageSize]) => {
+        if (data.tableConfig.request.data) {
+          console.log(4444);
+          data.tableConfig.request.data.pageNumber = currentPage;
+          data.tableConfig.request.data.pageSize = pageSize;
+          tableLoadData(data.tableConfig.request);
+        }
+      }
+    );
+    // 初始化table配置项
+    const initTableConfig = () => {
+      let configData = props.config;
+      let keys = Object.keys(data.tableConfig); //数组
       for (let key in configData) {
         if (keys.includes(key)) {
           //keys数组是否包含某个key
-          this.tableConfig[key] = configData[key];
+          data.tableConfig[key] = configData[key];
         }
       }
+    };
+
+    // 刷新数据
+    const refresh=()=>{
+      tableLoadData(props.config.request);
     }
-  },
-  beforeMount() {
-    this.initTableConfig();
-  },
-  mounted() {}
+
+    onBeforeMount(() => {
+      initTableConfig(); //不需要监听，在挂载之前可以对进行预先处理
+      tableLoadData(props.config.request);
+    });
+    onMounted: {
+    }
+    return {
+      data,
+      paginationData,
+      handleSizeChange,
+      handleCurrentChange,
+      handleSelectionChange,refresh
+    };
+  }
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.tableFooter {
+  margin-top: 20px;
+}
 </style>

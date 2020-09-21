@@ -137,8 +137,6 @@ export default {
   setup(props, { root }) {
     // 声明出来
     const { str: aaa, comfirm } = global();
-    // const { getInfoCategory, categoryItem } = common();
-
     /**
      * 数据
      */
@@ -183,7 +181,7 @@ export default {
      */
     // 分页的方法
     const handleSizeChange = val => {
-      page.pageSize = val;
+      page.pageSize = val;     
     };
     // 点击第几页
     const handleCurrentChange = val => {

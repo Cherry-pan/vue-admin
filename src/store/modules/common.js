@@ -2,10 +2,12 @@ import {
   getCategory
 } from "@/api/news.js";
 const state = {
-  qiNiuURL: "http://www-web-jshtml-cn-idva7mx.web-jshtml.cn/"
+  qiNiuURL: "http://www-web-jshtml-cn-idva7mx.web-jshtml.cn/",
 }
 const getters = {
   qiNiuURL: state => state.qiNiuURL
+}
+const mutations = {
 }
 const actions = {
   getCategory(context, data) {
@@ -25,5 +27,5 @@ export default {
   namespaced: true,
   state,
   getters,
-  actions
+  actions,mutations
 };

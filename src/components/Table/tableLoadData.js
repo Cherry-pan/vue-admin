@@ -7,16 +7,23 @@ import {
 export function loadData() {
     const tableData = reactive({
         item: [],
-        total:0
-    })   
+        total: 0
+    })
     const tableLoadData = (params) => {
         loadTableData(params)
             .then(res => {
-                console.log(res.data.data.data);
                 let response = res.data.data;
-                if (response.length > 0 && response != null) {
+                if (response.length > 0 && response) {
+                    console.log(response.data, "response>>>>>>>>>>>>>>");
+                    tableData.item = []
+                } else {
+                    console.log(response, "response1>>>>>>>>>>>>>>");
                     tableData.item = response.data;
                     tableData.total = response.total
+                    // console.log(tableData.item, "tableData.item>>>>>>>>");
+                    // tableData.item.forEach(item => {
+                    //     console.log(item.region);
+                    // })
                 }
             })
             .catch(error => {

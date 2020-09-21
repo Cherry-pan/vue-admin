@@ -17,11 +17,9 @@ let tableLoadData = {
             loadTableData(params)
                 .then(res => {
                     let response = res.data.data.data;
-                    console.log(response);
                     if (response.length > 0 && response != null) {
                         // 赋值
                         this.tableData = response;
-                        console.log(this.tableData, "this.tableData>>>>>");
                     } else {
                         // 赋值
                         this.tableData = response;
