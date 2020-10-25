@@ -4,7 +4,10 @@ import Layout from '@/views/Layout/index.vue';
 
 Vue.use(VueRouter);
 
-const routes = [{
+/**
+ * 默认路由
+ */
+const defaultRouterMap = [{
     path: "/",
     redirect: 'login', //重定向
     hidden: true,
@@ -37,7 +40,13 @@ const routes = [{
       },
       component: () => import("../views/Console/index.vue"),
     }]
-  }, {
+  },
+]
+
+/**
+ * 动态路由
+ */
+const asyncRouterMap = [{
     path: "/info",
     name: "Info",
     meta: {
@@ -59,18 +68,19 @@ const routes = [{
         name: "信息分类"
       },
       component: () => import("../views/Info/category.vue"),
-    },{
+    }, {
       path: "/editDetail",
       name: "editDetail",
-      hidden:true,  //不显示
+      hidden: true, //不显示
       meta: {
         name: "信息分类"
       },
       component: () => import("../views/Info/editDetail.vue"),
     }]
-  }, {
+  },
+  {
     path: "/userIndex",
-    
+
     name: "UserIndex",
     meta: {
       name: "用户管理",
@@ -86,12 +96,12 @@ const routes = [{
       component: () => import("../views/Users/index.vue"),
     }]
   }
-];
+]
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes
+  routes: defaultRouterMap
 });
 
 export default router;

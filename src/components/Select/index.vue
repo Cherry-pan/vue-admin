@@ -1,7 +1,7 @@
 <template>
-  <el-select v-model="data.defaulValue">
+  <el-select v-model="data.defaulValue" @change="select">
     <el-option
-      v-for="(item) in data.initOptionData"
+      v-for="item in data.initOptionData"
       :key="item.value"
       :label="item.label"
       :value="item.value"
@@ -17,9 +17,13 @@ export default {
     config: {
       type: Object,
       default: () => {}
+    },
+    selectData: {
+      type: Object,
+      default: () => {}
     }
   },
-  setup(props, { root }) {
+  setup(props, { root, emit }) {
     const data = reactive({
       defaulValue: "",
       initOptionData: [],
@@ -53,13 +57,21 @@ export default {
       data.initOptionData = arr;
       // 默认值
       data.defaulValue = arr[0].value;
+      // 未选择事也要传数据到父组件中
+      emit("update:selectData", arr[0]);
+    };
+    // 选择数据触发
+    const select = val => {
+      let filterData = data.optionsData.filter(item => item.value == val);
+      console.log(filterData);
+      emit("update:selectData", filterData); //父组件要.aync
     };
     onMounted: {
       initOptionData();
     }
     return {
       data,
-      initOptionData
+      select
     };
   }
 };

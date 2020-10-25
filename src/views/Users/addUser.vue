@@ -228,7 +228,7 @@ export default {
       GetSystem()
         .then(res => {
           // console.log(res.data.data);
-          // data.checkList = res.data.data;
+          data.checkList = res.data.data;
         })
         .catch(error => {
           console.log(error);
@@ -299,7 +299,6 @@ export default {
      * 窗口打开，动画结束时的回调
      */
     const open = () => {
-      console.log(props.editData, ">>>>>>>>>>>>>");
       data.form = props.editData;
       if (data.form.id) {
         console.log(1111);
@@ -308,10 +307,10 @@ export default {
         data.form.id = props.editData.id;
         if (tempData.role instanceof Array) {
           return false;
-        } else {
+        } else { //添加用户
           tempData.role = tempData.role.split(",");
         }
-        // data.form = tempData;
+        data.form = tempData;
         for (let key in props.editData) {
           data.form[key] = props.editData.id ? props.editData[key] : "";
         }
@@ -320,9 +319,9 @@ export default {
         data.mainTitle = "新增用户";
         data.form.id && delete data.form.id;
       }
-      getRole();
+      // getRole();
 
-      // getSys();
+      getSys();
       // getButtonPer();
     };
     const resetForm = form => {
@@ -357,7 +356,7 @@ export default {
       close,
       resetFields,
       onSubmit,
-      getRole,
+      // getRole,
       open,
       getSys,
       AddUser,

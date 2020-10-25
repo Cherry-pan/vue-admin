@@ -146,7 +146,6 @@ export default {
       [() => paginationData.currentPage, () => paginationData.pageSize],
       ([currentPage, pageSize]) => {
         if (data.tableConfig.request.data) {
-          console.log(4444);
           data.tableConfig.request.data.pageNumber = currentPage;
           data.tableConfig.request.data.pageSize = pageSize;
           tableLoadData(data.tableConfig.request);
@@ -168,6 +167,16 @@ export default {
     // 刷新数据
     const refresh=()=>{
       tableLoadData(props.config.request);
+    }
+
+    // 带参数的刷新shuj
+    const refreshParamsData = (params)=>{
+      console.log(params);
+      // let requestData = Object.assign({},params,{
+      //   pageNumber:1,
+      //   pageSize:10
+      // })
+      // console.log(requestData);
     }
 
     onBeforeMount(() => {

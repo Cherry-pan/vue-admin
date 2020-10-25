@@ -1,9 +1,17 @@
 <template>
   <div>
-    <el-form :model="ruleForm" ref="ruleForm" label-width="70px" class="demo-ruleForm just-c flex">
+    <el-form
+      :model="ruleForm"
+      ref="ruleForm"
+      label-width="70px"
+      class="demo-ruleForm just-c flex"
+    >
       <div class="flex keywords">
         <el-form-item label="关键字" prop="mobilephone" class="keyWords">
-          <select-value :config="data.configOptions"></select-value>
+          <select-value
+            :config="data.configOptions"
+            :selectData.sync="data.selectData"
+          ></select-value>
         </el-form-item>
         <el-input
           v-model="ruleForm.search_key_word"
@@ -11,15 +19,28 @@
           clearable
           style="width:200px;margin-left:40px;"
         >
-          <el-button icon="el-icon-search" slot="append"></el-button>
+          <el-button
+            icon="el-icon-search"
+            slot="append"
+            @click="search"
+          ></el-button>
         </el-input>
       </div>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="openDig('add','')">添加用户</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-circle-plus-outline"
+          @click="openDig('add', '')"
+          >添加用户</el-button
+        >
       </el-form-item>
     </el-form>
     <!-- 表格 -->
-    <my-table :config="data.configTable" :tableRow.sync="data.tableRow" ref="myTable">
+    <my-table
+      :config="data.configTable"
+      :tableRow.sync="data.tableRow"
+      ref="myTable"
+    >
       <template v-slot:status="data">
         <el-switch
           @change="handleSwitch(data.data)"
@@ -31,8 +52,12 @@
         ></el-switch>
       </template>
       <template v-slot:operation="data">
-        <el-button @click="openDig('edit',data.data)" type="text" size="small">编辑</el-button>
-        <el-button @click="handleClickDelet(data.data)" type="text" size="small">删除</el-button>
+        <el-button @click="openDig('edit', data.data)" type="text" size="small"
+          >编辑</el-button
+        >
+        <el-button @click="handleClickDelet(data.data)" type="text" size="small"
+          >删除</el-button
+        >
       </template>
       <template v-slot:tableFooter>
         <el-button
@@ -41,12 +66,18 @@
           type="danger"
           icon="el-icon-delete"
           @click="batchDel"
-        >批量删除</el-button>
+          >批量删除</el-button
+        >
       </template>
     </my-table>
 
     <!-- 新增用户 -->
-    <add-user :flag.sync="data.dialogInfo" :editData="data.editData" ref="openDig" @refresh="refresh"></add-user>
+    <add-user
+      :flag.sync="data.dialogInfo"
+      :editData="data.editData"
+      ref="openDig"
+      @refresh="refresh"
+    ></add-user>
   </div>
 </template>
 
@@ -73,14 +104,15 @@ export default {
      * reactive
      */
     const ruleForm = reactive({
-      mobilephone: "",
       search_key_word: ""
     });
     const data = reactive({
-      editData:{},
+      editData: {},
       configOptions: {
         initData: ["mobile", "name"]
       },
+      // 下拉框选择数据
+      selectData: {},
       configTable: {
         tHead: [
           {
@@ -142,12 +174,21 @@ export default {
       // table选择的数据
       tableRow: {},
       // 阻止多次触发启用禁用按钮
-      preventUsersFlag:false,
+      preventUsersFlag: false
     });
 
     /**
      * methods
      */
+    // 搜索关键字
+    const search = () => {
+      let requeryQarams = {
+        [data.selectData.value]: ruleForm.search_key_word
+      };
+      // console.log(data.selectData);
+      console.log(requeryQarams);
+      refs.myTable.refreshParamsData(requeryQarams);
+    };
     // 单个删除
     const handleClickDelet = row => {
       comfirm({
@@ -205,8 +246,10 @@ export default {
      * 用户按钮禁启用
      */
     const UserActives = data => {
-      if(data.preventUsersFlag){return false}
-      data.preventUsersFlag = true
+      if (data.preventUsersFlag) {
+        return false;
+      }
+      data.preventUsersFlag = true;
       let requestData = {
         id: data.id,
         status: data.status
@@ -217,17 +260,18 @@ export default {
             message: res.data.message,
             type: "success"
           });
-          data.preventUsersFlag = !data.preventUsersFlag
+          data.preventUsersFlag = !data.preventUsersFlag;
         })
         .catch(error => {
           console.log(error);
-          data.preventUsersFlag = !data.preventUsersFlag
+          data.preventUsersFlag = !data.preventUsersFlag;
         });
     };
     /**
      * switch开关
      */
-    const handleSwitch = data => {  //不传参数的话，就是switch对应的值，传参数的话，就是这个整条记录的内容
+    const handleSwitch = data => {
+      //不传参数的话，就是switch对应的值，传参数的话，就是这个整条记录的内容
       console.log(data);
       UserActives(data);
     };
@@ -244,7 +288,7 @@ export default {
     const openDig = (type, digital) => {
       data.dialogInfo = true;
       // refs.openDig.init(type, digital);
-      data.editData = Object.assign({},digital)
+      data.editData = Object.assign({}, digital);
     };
     const submitForm = () => {};
     return {
@@ -260,6 +304,7 @@ export default {
       myTable,
       refresh,
       handleSwitch,
+      search,
       // getButtonPer,
       UserActives
     };
